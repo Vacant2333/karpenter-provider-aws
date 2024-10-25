@@ -26,7 +26,7 @@ import (
 )
 
 // EC2NodeClassSpec is the top level specification for the AWS Karpenter Provider.
-// This will contain configuration necessary to launch instances in AWS.
+// This will contain the configuration necessary to launch instances in AWS.
 type EC2NodeClassSpec struct {
 	// SubnetSelectorTerms is a list of or subnet selector terms. The terms are ORed.
 	// +kubebuilder:validation:XValidation:message="subnetSelectorTerms cannot be empty",rule="self.size() != 0"
@@ -61,7 +61,7 @@ type EC2NodeClassSpec struct {
 	// alias is specified, this field is required.
 	// NOTE: We ignore the AMIFamily for hashing here because we hash the AMIFamily dynamically by using the alias using
 	// the AMIFamily() helper function
-	// +kubebuilder:validation:Enum:={AL2,AL2023,Bottlerocket,Custom,Windows2019,Windows2022}
+	// +kubebuilder:validation:Enum:={AL2, AL2023, Bottlerocket, Custom, Windows2019, Windows2022}
 	// +optional
 	AMIFamily *string `json:"amiFamily,omitempty" hash:"ignore"`
 	// UserData to be applied to the provisioned nodes.
@@ -154,7 +154,7 @@ type SubnetSelectorTerm struct {
 // SecurityGroupSelectorTerm defines selection logic for a security group used by Karpenter to launch nodes.
 // If multiple fields are used for selection, the requirements are ANDed.
 type SecurityGroupSelectorTerm struct {
-	// Tags is a map of key/value tags used to select subnets
+	// Tags is a map of key/value tags used to select security groups.
 	// Specifying '*' for a value selects all values for a given tag key.
 	// +kubebuilder:validation:XValidation:message="empty tag keys or values aren't supported",rule="self.all(k, k != '' && self[k] != '')"
 	// +kubebuilder:validation:MaxProperties:=20
@@ -184,7 +184,7 @@ type AMISelectorTerm struct {
 	// +kubebuilder:validation:MaxLength=30
 	// +optional
 	Alias string `json:"alias,omitempty"`
-	// Tags is a map of key/value tags used to select subnets
+	// Tags is a map of key/value tags used to select ami.
 	// Specifying '*' for a value selects all values for a given tag key.
 	// +kubebuilder:validation:XValidation:message="empty tag keys or values aren't supported",rule="self.all(k, k != '' && self[k] != '')"
 	// +kubebuilder:validation:MaxProperties:=20
