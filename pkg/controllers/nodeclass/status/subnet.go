@@ -40,7 +40,9 @@ func (s *Subnet) Reconcile(ctx context.Context, nodeClass *v1.EC2NodeClass) (rec
 	if len(subnets) == 0 {
 		nodeClass.Status.Subnets = nil
 		nodeClass.StatusConditions().SetFalse(v1.ConditionTypeSubnetsReady, "SubnetsNotFound", "SubnetSelector did not match any Subnets")
-		return reconcile.Result{}, nil
+		// If users have omitted the necessary tags and later add them, we need to reprocess the information.
+		// Returning 'ok' in this case means that the nodeclass will remain in an unready state until the component is restarted.
+		return reconcile.Result{RequeueAfter: 15 * time.Second}, nil
 	}
 	sort.Slice(subnets, func(i, j int) bool {
 		if int(*subnets[i].AvailableIpAddressCount) != int(*subnets[j].AvailableIpAddressCount) {

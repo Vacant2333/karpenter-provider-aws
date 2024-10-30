@@ -64,7 +64,7 @@ func NewDefaultProvider(clk clock.Clock, versionProvider version.Provider, ssmPr
 	}
 }
 
-// Get Returning a list of AMIs with its associated requirements
+// List Returning a list of AMIs with its associated requirements
 func (p *DefaultProvider) List(ctx context.Context, nodeClass *v1.EC2NodeClass) (AMIs, error) {
 	p.Lock()
 	defer p.Unlock()

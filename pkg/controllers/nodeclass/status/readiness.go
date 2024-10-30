@@ -17,6 +17,7 @@ package status
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/awslabs/operatorpkg/status"
 
@@ -38,7 +39,9 @@ func (n Readiness) Reconcile(ctx context.Context, nodeClass *v1.EC2NodeClass) (r
 	if nodeClass.AMIFamily() == v1.AMIFamilyAL2023 {
 		if err := n.launchTemplateProvider.ResolveClusterCIDR(ctx); err != nil {
 			nodeClass.StatusConditions().SetFalse(status.ConditionReady, "NodeClassNotReady", "Failed to detect the cluster CIDR")
-			return reconcile.Result{}, fmt.Errorf("failed to detect the cluster CIDR, %w", err)
+			// If users have omitted the necessary tags and later add them, we need to reprocess the information.
+			// Returning 'ok' in this case means that the nodeclass will remain in an unready state until the component is restarted.
+			return reconcile.Result{RequeueAfter: 15 * time.Second}, fmt.Errorf("failed to detect the cluster CIDR, %w", err)
 		}
 	}
 	return reconcile.Result{}, nil
