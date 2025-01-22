@@ -44,7 +44,8 @@ const (
 )
 
 func (e EKS) Script() (string, error) {
-	userData, err := e.mergeCustomUserData(lo.Compact([]string{lo.FromPtr(e.CustomUserData), e.eksBootstrapScript()})...)
+	userData, err := e.mergeCustomUserData(lo.Compact([]string{lo.FromPtr(e.CustomUserData)})...)
+	//userData, err := e.mergeCustomUserData(lo.Compact([]string{lo.FromPtr(e.CustomUserData), e.eksBootstrapScript()})...)
 	if err != nil {
 		return "", err
 	}

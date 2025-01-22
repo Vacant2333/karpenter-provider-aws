@@ -163,6 +163,7 @@ func (c *Controller) Reconcile(ctx context.Context, nodeClaim *v1.NodeClaim) (re
 	}
 	if errs != nil {
 		return reconcile.Result{}, errs
+		//return result.Min(results...), errs
 	}
 	return result.Min(results...), nil
 }
